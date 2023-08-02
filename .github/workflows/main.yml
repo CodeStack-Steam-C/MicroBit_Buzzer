@@ -1,0 +1,74 @@
+name: Run commands on different operating systems
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  Run-npm-on-Ubuntu:
+    name: Run npm on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          node-version: '18'
+      - run: |
+          sudo snap install snapcraft --classic
+          yarn install
+          yarn package-linux
+          zip -r MicrobitBuzzer-linux.zip dist/linux-unpacked
+      
+      - name: release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            MicrobitBuzzer-linux.zip
+
+  Run-PSScriptAnalyzer-on-Windows:
+    name: Run PSScriptAnalyzer on Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        with:
+          node-version: '18'
+      - run: |
+          yarn install
+          yarn package-win
+          powershell Compress-Archive -Path dist/win-unpacked -DestinationPath MicrobitBuzzer-pc
+      
+      - name: release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            MicrobitBuzzer-pc.zip     
+
+  Run-PSScriptAnalyzer-on-Mac:
+    name: Run PSScriptAnalyzer on Mac
+    runs-on: macos-latest
+    env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: |
+          yarn install
+          yarn package-mac
+          zip -r MicrobitBuzzer-mac.zip dist/mac
+
+      - name: release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            MicrobitBuzzer-mac.zip

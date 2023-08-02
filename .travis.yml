@@ -1,0 +1,44 @@
+jobs:
+  include:
+    - stage: building
+
+    - name: linux
+      os: linux
+      dist: focal
+      arch: amd64
+      language: node_js
+      node_js: "18"
+    
+    - name: mac
+      os: osx
+      osx_image: xcode14.2
+      language: node_js
+      node_js: "18"
+
+  deploy:
+    provider: releases
+    api_key: $GITHUB_TOKEN
+    file:
+      - "MicrobitBuzzer-pc.zip"
+      - "MicrobitBuzzer-mac.zip"
+      - "MicrobitBuzzer-linux.zip"
+    skip_cleanup: true
+    on:
+      tags: true
+
+script:
+  - |
+    if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+      yarn package-linux
+    else
+      yarn package-mac && yarn package-win
+    fi
+
+before_deploy:
+  - zip -r MicrobitBuzzer-pc.zip dist/win-unpacked
+  - zip -r MicrobitBuzzer-linux.zip dist/linux-unpacked
+  - zip -r MicrobitBuzzer-mac.zip dist/mac
+
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"

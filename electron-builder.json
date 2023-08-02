@@ -1,0 +1,21 @@
+{
+  "appId": "com.example.myapp",
+  "productName": "Microbit to pc",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "dist/**/*",
+    "node_modules/**/*"
+  ],
+  "mac": {
+    "target": "dmg",
+    "category": "your.category.type"
+  },
+  "win": {
+    "target": "nsis"
+  },
+  "linux": {
+    "target": "AppImage"
+  }
+}
