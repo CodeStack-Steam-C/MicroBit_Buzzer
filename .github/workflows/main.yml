@@ -6,28 +6,6 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  Run-npm-on-Ubuntu:
-    name: Run npm on Ubuntu
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          node-version: '18'
-      - run: |
-          sudo snap install snapcraft --classic
-          yarn install
-          yarn package-linux
-          zip -r MicrobitBuzzer-linux.zip dist/linux-unpacked
-      
-      - name: release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            MicrobitBuzzer-linux.zip
 
   Run-PSScriptAnalyzer-on-Windows:
     name: Run PSScriptAnalyzer on Windows
