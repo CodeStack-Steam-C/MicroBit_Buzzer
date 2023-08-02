@@ -6,10 +6,9 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-
-  permissions: write-all
   
   Run-PSScriptAnalyzer-on-Windows:
+    permissions: write-all
     name: Run PSScriptAnalyzer on Windows
     runs-on: windows-latest
     steps:
@@ -32,6 +31,7 @@ jobs:
             MicrobitBuzzer-pc.zip     
 
   Run-PSScriptAnalyzer-on-Mac:
+    permissions: write-all
     name: Run PSScriptAnalyzer on Mac
     runs-on: macos-latest
     env:
